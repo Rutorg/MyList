@@ -162,12 +162,89 @@ void test4()
 }
 
 
+// Проверка конструктора копирования.
+void test5()
+{
+	MyList<double> list1;
+
+	for (size_t i = 0; i < 10; i++) {
+		list1.pushBack(i + 0.1);
+	}
+
+	for (size_t i = 0; i < 10; i++) {
+		list1.pushFront(-(i + static_cast<double>(i) / 5));
+	}
+
+	myPrintMyList(list1, "list1");
+
+
+	MyList<double> list2 = list1;
+	cout << "list2 - copy of list2." << endl;
+	myPrintMyList(list2, "list2");
+
+
+	list1.clear();
+	myPrintMyList(list1, "list1 cleared");
+
+	cout << "list2 doesn't changed." << endl;
+	myPrintMyList(list2, "list2");
+	
+
+	myPrintTestEnded(5);
+}
+
+// Проверка оператора присваивания.
+void test6()
+{
+	MyList<double> list1;
+
+	for (size_t i = 0; i < 10; i++) {
+		list1.pushBack(i + 0.1);
+	}
+
+	for (size_t i = 0; i < 10; i++) {
+		list1.pushFront(-(i + static_cast<double>(i) / 5));
+	}
+
+	myPrintMyList(list1, "list1");
+
+
+	MyList<double> list2;
+
+	for (size_t i = 0; i < 20; i++) {
+		list2.pushBack(i);
+	}
+
+	for (size_t i = 0; i < 5; i++) {
+		list2.pushFront(-static_cast<int>(i));
+	}
+
+	myPrintMyList(list2, "list2");
+
+
+	list1 = list2;
+	cout << "After list1 = list2" << endl;
+	myPrintMyList(list1, "list1");
+	myPrintMyList(list2, "list2");
+
+
+	list2.clear();
+	cout << "After list2.clear()" << endl;
+	myPrintMyList(list1, "list1");
+	myPrintMyList(list2, "list2");
+
+	myPrintTestEnded(6);
+}
+
+
 int main()
 {
 	test1();
 	test2();
 	test3();
 	test4();
+	test5();
+	test6();
 
 	return 0;
 }
