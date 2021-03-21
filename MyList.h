@@ -236,28 +236,6 @@ public:
 		}
 
 
-		// Конструктор копирования. 
-		// Результат: указатель будет скопирован.
-		iterator(const iterator& other)
-		{
-			m_node = other.m_node;
-		}
-
-
-		// Оператор присваивания.
-		// Результат: указатель будет скопирован.
-		iterator& operator=(const iterator& other)
-		{
-			if (*this == other) {
-				return *this;
-			}
-
-			m_node = other.m_node;
-
-			return *this;
-		}
-
-
 		// Оператор разыменования.
 		// Результат: ссылка на элемент на который указывает итератор.
 		T& operator*()
