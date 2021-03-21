@@ -8,6 +8,7 @@ class MyList
 public:
 	// Объявляем класс итератор в начале.
 	class iterator;
+	class const_iterator;
 
 	// Конструктор по умолчанию.
 	// Результат: будет инициализирован барьерный элемент.
@@ -17,6 +18,35 @@ public:
 
 		m_barrier.next = &m_barrier;
 		m_barrier.prev = &m_barrier;
+	}
+
+
+	// Конструктор копирования.
+	// Входные параметры: other - копируемый список.
+	// Результат: будет создан список - копия other.
+	MyList(const MyList& other)
+	{
+		m_barrier.data = 0;
+
+		m_barrier.next = &m_barrier;
+		m_barrier.prev = &m_barrier;
+
+		for (auto& it : other) {
+			pushBack(it);
+		}
+	}
+
+
+	// Оператор присваивания.
+	// Входные параметры: other - вектор, который будет присваиваиться.
+	// Результат: будет скопирован список other.
+	MyList& operator=(const MyList& other)
+	{
+		clear();
+		for (auto& it : other) {
+			pushBack(it);
+		}
+		return *this;
 	}
 
 
@@ -79,6 +109,7 @@ public:
 		m_barrier.prev = newBackNode;
 	}
 
+
 	// Функция начать.
 	// Возвращает: итератор на первый элемент в списке.
 	iterator begin()
@@ -90,12 +121,32 @@ public:
 	}
 
 
+	// Функция начать.
+	// Возвращает: итератор на первый элемент в списке.
+	const_iterator begin() const
+	{
+		const_iterator it(m_barrier.next);
+
+		return it;
+	}
+
+
 	// Функция конец.
-	// Возвращает: итератор на последний элемент в списке.
+	// Возвращает: итератор на элемент после последнего в списке.
 	iterator end()
 	{
 		iterator it;
 		it.m_node = &m_barrier;
+
+		return it;
+	}
+
+
+	// Функция конец.
+	// Возвращает: итератор на элемент после последнего в списке.
+	const_iterator end() const
+	{
+		const_iterator it(&m_barrier);
 
 		return it;
 	}
@@ -185,7 +236,7 @@ public:
 		}
 
 
-		// Конструктор по копирования. 
+		// Конструктор копирования. 
 		// Результат: указатель будет скопирован.
 		iterator(const iterator& other)
 		{
@@ -279,6 +330,96 @@ public:
 		Node* m_node;
 	};
 
+	class const_iterator
+	{
+	public:
+		// Конструктор по умолчанию. 
+		// Результат: указатель становится nullptr.
+		const_iterator()
+		{
+			m_node = nullptr;
+		}
+
+
+		// Конструктор. 
+		// Результат: указатель становится nullptr.
+		const_iterator(const Node* node)
+		{
+			m_node = node;
+		}
+
+
+		// Оператор разыменования.
+		// Результат: const ссылка на элемент на который указывает итератор.
+		const T& operator*()
+		{
+			return m_node->data;
+		}
+
+
+		// Префиксный инкремент.
+		// Результат: ссылка на новый элемент.
+		const_iterator& operator++()
+		{
+			m_node = m_node->next;
+			return *this;
+		}
+
+
+		// Постфиксный инкремент.
+		// Результат: копия старого элемента.
+		const_iterator operator++(int)
+		{
+			const_iterator old = *this;
+			operator++();
+			return old;
+		}
+
+
+		// Префиксный декремент.
+		// Результат: ссылка на новый элемент.
+		const_iterator& operator--()
+		{
+			m_node = m_node->prev;
+			return *this;
+		}
+
+
+		// Постфиксный декремент.
+		// Результат: копия старого элемента.
+		const_iterator operator--(int)
+		{
+			const_iterator old = *this;
+			operator--();
+			return old;
+		}
+
+
+		// Оператор "равно". Если указатели одинаковые, то истина.
+		// Входные параметры: other - итератор, с которым идет сравнение.
+		bool operator==(const_iterator other)
+		{
+			if (m_node == other.m_node) {
+				return true;
+			}
+
+			return false;
+		}
+
+
+		// Оператор "не равно". Если указатели разные, то истина.
+		// Входные параметры: other - итератор, с которым идет сравнение.
+		bool operator!=(const_iterator other)
+		{
+			return !(*this == other);
+		}
+
+
+	private:
+
+		// Указатель на узел в векторе.
+		const Node* m_node;
+	};
 
 private:
 
